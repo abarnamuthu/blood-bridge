@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLOOD – Blood Bank Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Content -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Save Lives, Donate Blood</h2>
+                <p>Welcome to the Blood Bank Application – connecting donors with those in need of blood.</p>
+                <div class="hero-buttons">
+                    <a href="{{ url_for('register_type') }}" class="btn btn-primary">Register Now</a>
+                    <a href="{{ url_for('login_type') }}" class="btn btn-secondary">Login</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features -->
+        <section class="features">
+            <h3>How It Works</h3>
+            <div class="features-grid">
+                <div class="feature-card donor">
+                    <div class="feature-icon">🩸</div>
+                    <h4>For Donors</h4>
+                    <ul>
+                        <li>Register with your blood group</li>
+                        <li>View blood requests in need</li>
+                        <li>Accept and fulfill requests</li>
+                        <li>Track donation history</li>
+                    </ul>
+                </div>
+                <div class="feature-card requestor">
+                    <div class="feature-icon">🏥</div>
+                    <h4>For Requestors</h4>
+                    <ul>
+                        <li>Create blood requests</li>
+                        <li>Specify blood group and units</li>
+                        <li>Track request status</li>
+                        <li>Connect with donors</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blood Groups Info -->
+        <section class="blood-groups">
+            <h3>Blood Groups Supported</h3>
+            <div class="blood-grid">
+                <span class="blood-badge">O+</span>
+                <span class="blood-badge">O-</span>
+                <span class="blood-badge">A+</span>
+                <span class="blood-badge">A-</span>
+                <span class="blood-badge">B+</span>
+                <span class="blood-badge">B-</span>
+                <span class="blood-badge">AB+</span>
+                <span class="blood-badge">AB-</span>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>

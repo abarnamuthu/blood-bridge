@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Registration Type - BLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-small">Back to Home</a>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Content -->
+        <section class="auth-section">
+            <h2>Choose Your Role</h2>
+            <p class="section-subtitle">Select whether you are a Donor or a Requestor</p>
+
+            <div class="role-selection">
+                <div class="role-card donor-card">
+                    <div class="role-icon">🩸</div>
+                    <h3>Register as Donor</h3>
+                    <p>Donate blood and save lives</p>
+                    <a href="{{ url_for('register', user_type='donor') }}" class="btn btn-primary">Continue as Donor</a>
+                </div>
+
+                <div class="role-card requestor-card">
+                    <div class="role-icon">🏥</div>
+                    <h3>Register as Requestor</h3>
+                    <p>Request blood for medical needs</p>
+                    <a href="{{ url_for('register', user_type='requestor') }}" class="btn btn-primary">Continue as Requestor</a>
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <p>Already have an account? <a href="{{ url_for('login_type') }}">Login here</a></p>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>

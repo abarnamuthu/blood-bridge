@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirm Blood Donation - BLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Navigation -->
+        <header class="header with-nav">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+            <nav class="nav">
+                <span class="user-info">{{ session.name }}</span>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-small">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-small">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Confirmation Section -->
+        <section class="confirmation-section">
+            {% if blood_request %}
+                <h2>Confirm Blood Donation</h2>
+                <p class="section-subtitle">Please review the details below before confirming</p>
+
+                <div class="confirmation-card">
+                    <h3>Blood Request Details</h3>
+                    
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <label>Request ID</label>
+                            <value><code>{{ blood_request.id }}</code></value>
+                        </div>
+                        <div class="detail-item">
+                            <label>Blood Group Needed</label>
+                            <value><span class="badge badge-{{ blood_request.blood_group }}">{{ blood_request.blood_group }}</span></value>
+                        </div>
+                        <div class="detail-item">
+                            <label>Units Needed</label>
+                            <value>{{ blood_request.units }} units</value>
+                        </div>
+                        <div class="detail-item">
+                            <label>Requestor Email</label>
+                            <value>{{ blood_request.requestor_email }}</value>
+                        </div>
+                        <div class="detail-item">
+                            <label>Your Blood Group</label>
+                            <value><span class="badge badge-{{ user.blood_group }}">{{ user.blood_group }}</span></value>
+                        </div>
+                        <div class="detail-item">
+                            <label>Your Name</label>
+                            <value>{{ user.name }}</value>
+                        </div>
+                    </div>
+
+                    <!-- AI COMPATIBILITY VERIFICATION -->
+                    {% if compatibility_info %}
+                    <div class="ai-compatibility-box">
+                        <h4>🤖 AI Compatibility Verification</h4>
+                        <p style="margin: 10px 0; color: #2e7d32; font-weight: 500;">✓ {{ compatibility_info }}</p>
+                        <p style="font-size: 0.9em; color: #666; margin: 8px 0;">Your blood group is medically compatible with this request. The AI engine has verified this donation is safe.</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="warning-box">
+                        <h4>⚠️ Important Notice</h4>
+                        <p>By confirming this donation, you are committing to donate blood to the requestor. Please ensure you are in good health and eligible to donate blood.</p>
+                    </div>
+
+                    <form method="POST" class="confirmation-form">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="confirm_health" name="confirm_health" value="yes">
+                            <label for="confirm_health">I confirm that I am in good health and eligible to donate blood</label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-success btn-large" onclick="return confirm('Are you sure you want to accept this blood request?')">Confirm & Accept Donation</button>
+                            <a href="{{ url_for('donors') }}" class="btn btn-secondary btn-large">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="info-box">
+                    <h4>What Happens Next?</h4>
+                    <ul>
+                        <li>Your donation acceptance will be recorded</li>
+                        <li>The request status will change to "CONFIRMED"</li>
+                        <li>This donation will appear in your donation history</li>
+                        <li>The requestor will see your details</li>
+                    </ul>
+                </div>
+            {% else %}
+                <div class="error-message">
+                    <p>Blood request not found.</p>
+                    <a href="{{ url_for('donors') }}" class="btn btn-primary">Back to Requests</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Available Blood Requests - BLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Navigation -->
+        <header class="header with-nav">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+            <nav class="nav">
+                <span class="user-info">{{ session.name }} (DONOR)</span>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-small">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-small">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Donors Section -->
+        <section class="donors-section">
+            <h2>Available Blood Requests</h2>
+            <p class="section-subtitle">View and accept blood requests from the community</p>
+
+            <!-- AI RECOMMENDED COMPATIBLE DONORS LABEL -->
+            <div class="ai-info-banner">
+                <div class="ai-badge">🤖 AI POWERED</div>
+                <p><strong>Filtered by Blood Compatibility AI Engine:</strong> Showing only blood requests compatible with your blood group <span class="badge badge-{{ donor_blood_group }}">{{ donor_blood_group }}</span></p>
+                <p style="font-size: 0.9em; color: #666; margin-top: 5px;">The AI engine uses medically-approved blood transfusion compatibility rules to ensure safe donations.</p>
+            </div>
+
+            {% if active_requests %}
+                <div class="compatibility-stats">
+                    <p><strong>{{ active_requests|length }}</strong> compatible request(s) found | <strong>{{ all_active_requests|length }}</strong> total active request(s)</p>
+                </div>
+
+                <div class="requests-grid">
+                    {% for req in active_requests %}
+                        <div class="donor-request-card">
+                            <div class="request-top">
+                                <h3>{{ req.blood_group }} Blood Request</h3>
+                                <span class="badge badge-{{ req.blood_group }}">{{ req.blood_group }}</span>
+                                <!-- AI Compatibility Indicator -->
+                                <span class="ai-compatible-badge">✓ Compatible</span>
+                            </div>
+                            
+                            <div class="request-content">
+                                <p><strong>Request ID:</strong> <code>{{ req.id }}</code></p>
+                                <p><strong>Units Needed:</strong> {{ req.units }} units</p>
+                                <p><strong>Requestor:</strong> {{ req.requestor_email }}</p>
+                                <p><strong>Created:</strong> {{ req.timestamp }}</p>
+                                <p><strong>Status:</strong> <span class="status-badge status-requested">Waiting for Donor</span></p>
+                            </div>
+
+                            <div class="request-actions">
+                                <a href="{{ url_for('donate_blood', request_id=req.id) }}" class="btn btn-primary btn-full">Accept & Donate Blood</a>
+                                <a href="{{ url_for('donor_profile', donor_email=req.requestor_email) }}" class="btn btn-secondary btn-full">View Requestor Profile</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <div class="empty-icon">📭</div>
+                    <h3>No Compatible Requests</h3>
+                    <p>There are currently no blood requests compatible with your blood group <span class="badge badge-{{ donor_blood_group }}">{{ donor_blood_group }}</span>.</p>
+                    {% if all_active_requests|length > 0 %}
+                        <p style="font-size: 0.9em; color: #666;">There are {{ all_active_requests|length }} total active request(s), but none are compatible with your blood type.</p>
+                    {% else %}
+                        <p style="font-size: 0.9em; color: #666;">Please check back later for new requests.</p>
+                    {% endif %}
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-primary">Back to Dashboard</a>
+                </div>
+            {% endif %}
+        </section>
+
+        <!-- Info Box -->
+        <section class="info-section">
+            <h3>How to Donate Blood</h3>
+            <div class="info-box">
+                <ol>
+                    <li>View all active blood requests above</li>
+                    <li>Check the blood group and units needed</li>
+                    <li>Click "Accept & Donate Blood" to proceed</li>
+                    <li>Confirm your donation</li>
+                    <li>Your donation will be recorded in your history</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>

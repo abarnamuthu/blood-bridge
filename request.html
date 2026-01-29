@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blood Request - BLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Navigation -->
+        <header class="header with-nav">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+            <nav class="nav">
+                <span class="user-info">{{ session.name }}</span>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-small">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-small">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Create Request Section -->
+        <section class="request-section">
+            <h2>Create a Blood Request</h2>
+            <p class="section-subtitle">Fill in the details of your blood requirement</p>
+
+            <form method="POST" class="request-form">
+                <div class="form-group">
+                    <label for="blood_group">Blood Group Required</label>
+                    <select id="blood_group" name="blood_group" required onchange="updateCompatibilityInfo()">
+                        <option value="">Select blood group needed</option>
+                        <option value="O+">O+ (Universal Donor)</option>
+                        <option value="O-">O- (Universal Donor)</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+ (Universal Recipient)</option>
+                        <option value="AB-">AB- (Universal Recipient)</option>
+                    </select>
+                </div>
+
+                <!-- AI COMPATIBILITY INFO DISPLAY -->
+                <div id="compatibility-info" style="display:none; margin-top: 15px; padding: 12px; background-color: #e8f5e9; border-left: 4px solid #4CAF50; border-radius: 4px;">
+                    <p style="margin: 0; color: #2e7d32;">
+                        <strong>🤖 AI Compatibility Information:</strong><br/>
+                        <span id="compatibility-text" style="font-size: 0.95em;"></span>
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="units">Number of Units</label>
+                    <input type="number" id="units" name="units" min="1" max="10" placeholder="Enter number of units (1-10)" required>
+                    <small>1 unit = 450ml of blood</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">Create Request</button>
+            </form>
+
+            <div class="info-box">
+                <h4>Information</h4>
+                <p><strong>What happens after you create a request?</strong></p>
+                <ul>
+                    <li>Your request will be visible to all registered donors</li>
+                    <li>The AI engine automatically identifies compatible donors based on blood transfusion rules</li>
+                    <li>Only compatible donors can accept your request</li>
+                    <li>Donors can view and accept your request</li>
+                    <li>Once a donor accepts, your status will change to "CONFIRMED"</li>
+                    <li>You can track the status and compatible donor count in your dashboard</li>
+                </ul>
+            </div>
+
+            <!-- AI BLOOD COMPATIBILITY REFERENCE -->
+            <div class="info-box ai-reference">
+                <h4>🤖 Blood Compatibility Reference (AI Engine)</h4>
+                <p><strong>Compatible Blood Groups by Request Type:</strong></p>
+                <ul style="font-size: 0.9em;">
+                    <li><strong>O+ Request:</strong> Compatible with O+, O-</li>
+                    <li><strong>O- Request:</strong> Compatible with O- only</li>
+                    <li><strong>A+ Request:</strong> Compatible with A+, A-, O+, O-</li>
+                    <li><strong>A- Request:</strong> Compatible with A-, O-</li>
+                    <li><strong>B+ Request:</strong> Compatible with B+, B-, O+, O-</li>
+                    <li><strong>B- Request:</strong> Compatible with B-, O-</li>
+                    <li><strong>AB+ Request:</strong> Compatible with all blood groups (Universal Recipient)</li>
+                    <li><strong>AB- Request:</strong> Compatible with AB-, A-, B-, O-</li>
+                </ul>
+            </div>
+
+            <div class="link-box">
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+        </section>
+
+        <script>
+            // AI Compatibility Information Display
+            const compatibilityMap = {
+                'O+': 'O+ Blood: Compatible donors are O+, O-',
+                'O-': 'O- Blood (Universal Donor): Compatible donors are O- only',
+                'A+': 'A+ Blood: Compatible donors are A+, A-, O+, O-',
+                'A-': 'A- Blood: Compatible donors are A-, O-',
+                'B+': 'B+ Blood: Compatible donors are B+, B-, O+, O-',
+                'B-': 'B- Blood: Compatible donors are B-, O-',
+                'AB+': 'AB+ Blood (Universal Recipient): Compatible donors are all groups',
+                'AB-': 'AB- Blood: Compatible donors are AB-, A-, B-, O-'
+            };
+
+            function updateCompatibilityInfo() {
+                const selectedBlood = document.getElementById('blood_group').value;
+                const compatibilityDiv = document.getElementById('compatibility-info');
+                const compatibilityText = document.getElementById('compatibility-text');
+
+                if (selectedBlood && compatibilityMap[selectedBlood]) {
+                    compatibilityText.textContent = compatibilityMap[selectedBlood];
+                    compatibilityDiv.style.display = 'block';
+                } else {
+                    compatibilityDiv.style.display = 'none';
+                }
+            }
+        </script>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>

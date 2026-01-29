@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Profile - BLOOD</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Navigation -->
+        <header class="header with-nav">
+            <div class="logo">
+                <h1>🩸 BLOOD</h1>
+                <p class="tagline">Blood Bank Application</p>
+            </div>
+            <nav class="nav">
+                <a href="{{ url_for('donors') }}" class="btn btn-secondary btn-small">Back to Requests</a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-small">Dashboard</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-small">Logout</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button class="close-btn" onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Donor Profile Section -->
+        <section class="profile-section">
+            <h2>Donor Profile</h2>
+
+            <div class="profile-card">
+                <div class="profile-avatar">
+                    🩸
+                </div>
+                <div class="profile-details">
+                    <h3>{{ donor.name }}</h3>
+                    <p><strong>Email:</strong> {{ donor.email }}</p>
+                    <p><strong>Blood Group:</strong> <span class="badge badge-{{ donor.blood_group }}">{{ donor.blood_group }}</span></p>
+                    <p><strong>Donor ID:</strong> <code>{{ donor.id }}</code></p>
+                    <p><strong>Member Since:</strong> 2026</p>
+                </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <h3>Donation History</h3>
+            
+            {% if donation_history %}
+                <div class="history-container">
+                    <table class="history-table">
+                        <thead>
+                            <tr>
+                                <th>Request ID</th>
+                                <th>Blood Group</th>
+                                <th>Donation Date & Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for donation in donation_history %}
+                                <tr>
+                                    <td><code>{{ donation.request_id }}</code></td>
+                                    <td><span class="badge badge-{{ donation.blood_group }}">{{ donation.blood_group }}</span></td>
+                                    <td>{{ donation.date_time }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="stats">
+                        <p><strong>Total Donations:</strong> {{ donation_history|length }}</p>
+                    </div>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <p>This donor has no donation history yet.</p>
+                </div>
+            {% endif %}
+
+            <div class="link-box">
+                <a href="{{ url_for('donors') }}" class="btn btn-secondary">Back to Requests</a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2026 BLOOD – Blood Bank Application. All rights reserved.</p>
+            <p><em>"Donate blood, save lives."</em></p>
+        </footer>
+    </div>
+</body>
+</html>
